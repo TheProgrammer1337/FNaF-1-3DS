@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 26a29a8cb873e66449f91b422950e6a1
+timeCreated: 1718682651
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 20
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Five Nights at Freddy's
+  fontNames:
+  - Five Nights at Freddy's
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
