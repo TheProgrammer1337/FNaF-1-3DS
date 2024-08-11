@@ -46,7 +46,8 @@ public class CameraScript : MonoBehaviour {
     public GameObject cachedbutton;
     public GameObject DividedStatic;
     public string cameratransfer;
-
+    public string buttonpublic = "CAM1A";
+    public AudioSource CameraBlip;
     // Use this for initialization
     void Start () {
         Night = PlayerPrefs.GetInt("Night", 1);
@@ -60,10 +61,13 @@ public class CameraScript : MonoBehaviour {
             cachedbutton.GetComponent<Image>().sprite = ButtonUnClicked;
         }
         buttonclicked.GetComponent<Image>().sprite = ButtonClicked;
+        CameraBlip.Play();
         cachedbutton = buttonclicked;
     }
     public void OnButtonClick(string button)
 	{
+
+        buttonpublic = button;
         if (Movement.CameraIsUp == false)
         {
             DividedStatic.SetActive(true);
@@ -84,40 +88,40 @@ public class CameraScript : MonoBehaviour {
         }
         if (button == "CAM1A")
 		{
-			if (Movement.BonnieLocation == 0 && Movement.ChicaLocation == 0)
+			if (Movement.BonnieLocation == "CAM1A" && Movement.ChicaLocation == "CAM1A")
 			{
 				SpriteHolder.GetComponent<Image>().sprite = CAM1A;
 			}
-            if (Movement.BonnieLocation != 0 && Movement.ChicaLocation == 0)
+            if (Movement.BonnieLocation != "CAM1A" && Movement.ChicaLocation == "CAM1A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1ABonnieMissing;
             }
-            if (Movement.BonnieLocation == 0 && Movement.ChicaLocation != 0)
+            if (Movement.BonnieLocation == "CAM1A" && Movement.ChicaLocation != "CAM1A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1AChicaMissing;
             }
-            if (Movement.BonnieLocation != 0 && Movement.ChicaLocation != 0)
+            if (Movement.BonnieLocation != "CAM1A" && Movement.ChicaLocation != "CAM1A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1AFreddyStaring;
             }
         }
         if (button == "CAM1B")
         {
-            if (Movement.BonnieLocation != 2 && Movement.ChicaLocation != 1)
+            if (Movement.BonnieLocation != "CAM1B" && Movement.ChicaLocation != "CAM1B")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1B;
             }
 
-            if (Movement.BonnieLocation == 2 && Movement.ChicaLocation != 1)
+            if (Movement.BonnieLocation == "CAM1B" && Movement.ChicaLocation != "CAM1B")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1BBonnie;
             }
 
-            if (Movement.BonnieLocation != 2 && Movement.ChicaLocation == 1)
+            if (Movement.BonnieLocation != "CAM1B" && Movement.ChicaLocation == "CAM1B")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1BChica;
             }
-            if (Movement.BonnieLocation == 2)
+            if (Movement.BonnieLocation == "CAM1B")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM1BBonnie;
             }
@@ -151,7 +155,7 @@ public class CameraScript : MonoBehaviour {
             {
                 StartCoroutine("CAM2AAnimation");
             }
-            if (Movement.BonnieLocation == 3)
+            if (Movement.BonnieLocation == "CAM2A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM2ABonnie;
             }
@@ -166,7 +170,7 @@ public class CameraScript : MonoBehaviour {
             {
                 StartCoroutine("CAM2AAnimation");
             }
-            if (Movement.BonnieLocation == 3)
+            if (Movement.BonnieLocation == "CAM2A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM2ABonnie;
             }
@@ -178,7 +182,7 @@ public class CameraScript : MonoBehaviour {
         if (button == "CAM2B")
         {
 
-            if (Movement.BonnieLocation == 4)
+            if (Movement.BonnieLocation == "CAM2B")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM2BBonnie1;
                 if (isrunning2 == false && Night >= 4)
@@ -194,7 +198,7 @@ public class CameraScript : MonoBehaviour {
         if (button == "CAM3")
         {
 
-            if (Movement.BonnieLocation == 5)
+            if (Movement.BonnieLocation == "CAM3")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM3Bonnie;
             }
@@ -206,7 +210,7 @@ public class CameraScript : MonoBehaviour {
         if (button == "CAM4A")
         {
 
-            if (Movement.ChicaLocation == 3)
+            if (Movement.ChicaLocation == "CAM4A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM4AChica1;
             }
@@ -218,7 +222,7 @@ public class CameraScript : MonoBehaviour {
         if (button == "CAM4B")
         {
 
-            if (Movement.ChicaLocation == 5)
+            if (Movement.ChicaLocation == "CAM4B")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM4BChica1;
             }
@@ -229,7 +233,7 @@ public class CameraScript : MonoBehaviour {
         }
         if (button == "CAM5")
         {
-            if (Movement.BonnieLocation == 1)
+            if (Movement.BonnieLocation == "CAM5")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM5Bonnie;
             }
@@ -246,7 +250,7 @@ public class CameraScript : MonoBehaviour {
         }
         if (button == "CAM7")
         {
-            if (Movement.ChicaLocation == 3)
+            if (Movement.ChicaLocation == "CAM7")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM7Chica;
             }
@@ -266,7 +270,7 @@ public class CameraScript : MonoBehaviour {
         {
             SpriteHolder.GetComponent<Image>().sprite = CAM2A2;
             yield return new WaitForSeconds(0.1f - Random.Range(-0.03f, 0.09f));
-            if (Movement.BonnieLocation == 3)
+            if (Movement.BonnieLocation == "CAM2A")
             {
                 SpriteHolder.GetComponent<Image>().sprite = CAM2ABonnie;
             }
@@ -280,7 +284,7 @@ public class CameraScript : MonoBehaviour {
     IEnumerator CAM2BAnimation()
     {
         isrunning2 = true;
-        while (Movement.BonnieLocation == 4)
+        while (Movement.BonnieLocation == "CAM2B")
         {
             SpriteHolder.GetComponent<Image>().sprite = CAM2BBonnie1;
             yield return new WaitForSeconds(0.1f - Random.Range(-0.03f, 0.09f));
@@ -296,5 +300,13 @@ public class CameraScript : MonoBehaviour {
         isrunning2 = false;
         SpriteHolder.GetComponent<Image>().sprite = CAM2B;
     }
-
+    public IEnumerator Blackout()
+    {
+        OnButtonClick(buttonpublic);
+        DividedStatic.SetActive(true);
+        SpriteHolder.GetComponent<Image>().color = new Color(SpriteHolder.GetComponent<Image>().color.r, SpriteHolder.GetComponent<Image>().color.g, SpriteHolder.GetComponent<Image>().color.b, 0);
+        yield return new WaitForSeconds(5);
+        SpriteHolder.GetComponent<Image>().color = new Color(SpriteHolder.GetComponent<Image>().color.r, SpriteHolder.GetComponent<Image>().color.g, SpriteHolder.GetComponent<Image>().color.b, 1);
+           
+    }
 }

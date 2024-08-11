@@ -10,8 +10,8 @@ public class Movement : MonoBehaviour {
     int FreddyDifficulty;
     public int FoxyDifficulty;
 
-    public int BonnieLocation;
-    public int ChicaLocation;
+    public string BonnieLocation;
+    public string ChicaLocation;
     public int FreddyLocation;
     public int FoxyLocation;
     public float FoxyMovementCountdownBonus;
@@ -28,13 +28,18 @@ public class Movement : MonoBehaviour {
     public TimeAndPower power;
     public CameraScript CameraScript;
     public GameObject CameraStatic;
+    public GameObject CameraStaticPrefab;
     public GameObject BonnieJumpscare;
+    public GameObject Black;
+    public AudioSource StaticDeath;
     public bool bonnieinside = false;
     bool chicainside = false;
     public bool CameraIsUp = true;
     public GameObject Tablet;
     public GameObject DividedStatic;
     float cooldown;
+    bool once = false;
+   
     void Update()
     {
         // Foxy code
@@ -95,8 +100,34 @@ public class Movement : MonoBehaviour {
                     Destroy(child);
                     Debug.Log(child.name);
                 }
-                Instantiate(BonnieJumpscare, UpperCanvas.transform);
+                GameObject bonniejumpscare = Instantiate(BonnieJumpscare, UpperCanvas.transform);
                 Tablet.transform.SetAsLastSibling();
+                yield return new WaitForSeconds(0.3f);
+                Destroy(Tablet);
+                yield return new WaitForSeconds(0.3f);
+                DividedStatic.SetActive(true);
+                DividedStatic.transform.SetAsLastSibling();
+                StaticDeath.Play();
+
+                DestroyImmediate(bonniejumpscare, true);
+                
+                CameraStatic.SetActive(true);
+                CameraStatic.GetComponent<Animator>().Play("NewAnim");
+                CameraStatic.transform.SetAsLastSibling();
+            }
+            else if (chicainside == true)
+            {
+                foreach (GameObject child in GameObject.FindGameObjectsWithTag("Respawn"))
+                {
+                    DestroyImmediate(child);
+                    Debug.Log(child.name);
+                }
+                Instantiate(BonnieJumpscare, UpperCanvas.transform);
+                Instantiate(CameraStaticPrefab, UpperCanvas.transform);
+                Tablet.transform.SetAsLastSibling();
+                CameraStatic.SetActive(true);
+                CameraStatic.transform.SetAsLastSibling();
+
             }
 
         }
@@ -111,9 +142,24 @@ public class Movement : MonoBehaviour {
         {
 
             LowerCanvas.SetActive(false);
-            Office.SetActive(true);
-            CameraObject.enabled = false;
-            CameraStatic.SetActive(false);
+            try
+            {
+                Office.SetActive(true);
+                CameraObject.enabled = false;
+            }
+            catch
+            {
+
+            }
+            if (chicainside != true && bonnieinside != true) 
+            {
+                CameraStatic.SetActive(false);
+            }
+            else
+            {
+                CameraStatic.SetActive(true);
+            }
+
 
         }
         else
@@ -124,6 +170,15 @@ public class Movement : MonoBehaviour {
             Office.SetActive(false);
             CameraObject.enabled = true;
             CameraStatic.SetActive(true);
+
+            // fix this
+
+            if (once == false)
+            {
+                CameraScript.OnButtonClick("CAM1A");
+                once = true;
+            }
+
             if (Office.GetComponent<Office>().leftlighton == true)
             {
                 power.PowerUsage -= 1;
@@ -143,22 +198,25 @@ public class Movement : MonoBehaviour {
 
         }
 
-
         FanNoise.volume = 0.15f;
         Ambience.volume = 0.5f;
         CameraSound.Play();
-        if (CameraObject.IsActive() == false)
+        if (CameraObject != null)
         {
-            power.PowerUsage -= 1;
-            FanNoise.volume = 1f;
-            Ambience.volume = 1f;
+            if (CameraObject.IsActive() == false)
+            {
+                power.PowerUsage -= 1;
+                FanNoise.volume = 1f;
+                Ambience.volume = 1f;
+            }
+            else
+            {
+                power.PowerUsage += 1;
+                FanNoise.volume = 0.25f;
+                Ambience.volume = 0.8f;
+            }
         }
-        else
-        {
-            power.PowerUsage += 1;
-            FanNoise.volume = 0.25f;
-            Ambience.volume = 0.8f;
-        }
+
     }
     void Start () {
         StartCoroutine("BonnieMovement");
@@ -234,103 +292,110 @@ public class Movement : MonoBehaviour {
         while (true)
         {
             yield return new WaitForSeconds(4.97f);
+            string prevlocation = BonnieLocation;
             int rand = Random.Range(0, 21);
             Debug.Log("BonnieMoveAttempt");
             if (rand < BonnieDifficulty)
             {
                 switch (BonnieLocation)
                 {
-                    case 0: // stage
+                    case "CAM1A": // stage
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // backstage
-                            BonnieLocation = 1;
+                            BonnieLocation = "CAM5";
                         }
                         else
                         {
                             // party room
-                            BonnieLocation = 2;
+                            BonnieLocation = "CAM1B";
                         }
                         break;
-                    case 1: // backstage
+                    case "CAM5": // backstage
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // backstage
-                            BonnieLocation = 1;
+                            BonnieLocation = "CAM5";
                         }
                         else
                         {
                             // west hallway
-                            BonnieLocation = 3;
+                            BonnieLocation = "CAM2A";
                         }
                         break;
 
-                    case 2: // party room
+                    case "CAM1B": // party room
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // backstage
-                            BonnieLocation = 1;
+                            BonnieLocation = "CAM5";
                         }
                         else
                         {
                             // west hallway
-                            BonnieLocation = 3;
+                            BonnieLocation = "CAM2A";
                         }
                         break;
 
-                    case 3: // west hallway
+                    case "CAM2A": // west hallway
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // west corner
-                            BonnieLocation = 4;
+                            BonnieLocation = "CAM2B";
                         }
                         else
                         {
                             // supply closet
-                            BonnieLocation = 5;
+                            BonnieLocation = "CAM3";
                         }
                         break;
 
-                    case 4: // west corner
+                    case "CAM2B": // west corner
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // left door
-                            BonnieLocation = 6;
+                            BonnieLocation = "LEFTDOOR";
                         }
                         else
                         {
                             // supply closet
-                            BonnieLocation = 5;
+                            BonnieLocation = "CAM3";
                         }
                         break;
-                    case 5: // supply closet
+                    case "CAM3": // supply closet
                         rand = Random.Range(0, 2);
                         if (rand == 0)
                         {
-                            BonnieLocation = 3; // west hallway
+                            BonnieLocation = "CAM2A";
                         }
                         else if (rand == 1)
                         {
                             // left door
-                            BonnieLocation = 6;
+                            BonnieLocation = "LEFTDOOR";
                         }
 
                         break;
 
-                    case 6:
+                    case "LEFTDOOR":
                         StopCoroutine("BonnieMovement");
+                        BonnieLocation = "INSIDE";
                         bonnieinside = true;
                         break;
                     default:
                         break;
                 }
+                if (BonnieLocation == CameraScript.buttonpublic || prevlocation == CameraScript.buttonpublic)
+                {
+                    CameraScript.StartCoroutine("Blackout");
+                }
+                prevlocation = BonnieLocation;
             }
-                CameraScript.OnButtonClick(CameraScript.currentbutton);
+
             Debug.Log(BonnieLocation.ToString());
         }
     }
@@ -338,6 +403,7 @@ public class Movement : MonoBehaviour {
     {
         while (true)
         {
+            string prevloc2 = ChicaLocation;
             yield return new WaitForSeconds(4.98f);
             int rand = Random.Range(0, 21);
             Debug.Log("ChicaMoveAttempt");
@@ -345,89 +411,96 @@ public class Movement : MonoBehaviour {
             {
                 switch (ChicaLocation)
                 {
-                    case 0: // stage
+                    case "CAM1A": // stage
                         //dining hall
-                        ChicaLocation = 1;
+                        ChicaLocation = "CAM1B";
                         break;
-                    case 1: // dining hall
+                    case "CAM1B": // dining hall
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // kitchen
-                            ChicaLocation = 2;
+                            ChicaLocation = "CAM6";
                         }
                         else
                         {
                             // bathrooms
-                            ChicaLocation = 3;
+                            ChicaLocation = "CAM7";
                         }
                         break;
 
-                    case 2: // kitchen
+                    case "CAM6": // kitchen
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // bathrooms
-                            ChicaLocation = 3;
+                            ChicaLocation = "CAM7";
                         }
                         else
                         {
                             // east hallway
-                            ChicaLocation = 4;
+                            ChicaLocation = "CAM4A";
                         }
                         break;
 
-                    case 3: // bathrooms
+                    case "CAM7": // bathrooms
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // east hallway
-                            ChicaLocation = 4;
+                            ChicaLocation = "CAM4A";
                         }
                         else
                         {
                             // kitchen
-                            ChicaLocation = 2;
+                            ChicaLocation = "CAM6";
                         }
                         break;
 
-                    case 4: // east hallway
+                    case "CAM4A": // east hallway
                         rand = Random.Range(0, 2);
                         if (rand == 1)
                         {
                             // dining hall
-                            ChicaLocation = 1;
+                            ChicaLocation = "CAM1B";
                         }
                         else
                         {
                             // east corner
-                            ChicaLocation = 5;
+                            ChicaLocation = "CAM4B";
                         }
                         break;
-                    case 5: // east corner
+                    case "CAM4B": // east corner
                         rand = Random.Range(0, 2);
                         if (rand == 0)
                         {
                             // east hallway
-                            ChicaLocation = 4;
+                            ChicaLocation = "CAM4A";
                         }
                         else
                         {
                             // right door
-                            ChicaLocation = 6;
+                            ChicaLocation = "RIGHTDOOR";
                         }
 
                         break;
 
-                    case 6:
+                    case "RIGHTDOOR":
                         StopCoroutine("ChicaMovement");
+                        ChicaLocation = "INSIDE";
                         chicainside = true;
+                        ChicaLocation = null;
                         break;
                     default:
                         break;
                 }
+                if (ChicaLocation == CameraScript.buttonpublic || prevloc2 == CameraScript.buttonpublic)
+                {
+                   CameraScript.StartCoroutine("Blackout");
+                }
+                prevloc2 = ChicaLocation;
             }
-            CameraScript.OnButtonClick(CameraScript.currentbutton);
+
             Debug.Log(BonnieLocation.ToString());
         }
     }

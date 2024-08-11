@@ -29,6 +29,7 @@ public class Office : MonoBehaviour {
 
     public AudioSource LightSound;
     public AudioSource DoorSound;
+    public AudioSource error;
 
     float leftdoorcooldown;
     float rightdoorcooldown;
@@ -72,36 +73,52 @@ public class Office : MonoBehaviour {
             {
                 leftlighton = true;
                 rightlighton = false;
-                if (movement.BonnieLocation == 6)
+                if (movement.BonnieLocation == "LEFTDOOR")
                 {
                     gameObject.GetComponent<Image>().sprite = LeftLightBonnie;
+                    LeftLightBar.GetComponent<Image>().sprite = LeftLightBarLight;
+                    LightSound.Play();
+                    timeandpower.PowerUsage += 1;
+                }
+                else if (movement.BonnieLocation != "INSIDE")
+                {
+                    gameObject.GetComponent<Image>().sprite = LeftLight;
+                    LeftLightBar.GetComponent<Image>().sprite = LeftLightBarLight;
+                    LightSound.Play();
+                    timeandpower.PowerUsage += 1;
                 }
                 else
                 {
-                    gameObject.GetComponent<Image>().sprite = LeftLight;
+                    error.Play();
                 }
-                LeftLightBar.GetComponent<Image>().sprite = LeftLightBarLight;
-                LightSound.Play();
-                timeandpower.PowerUsage += 1;
+
                 done = false;
             }
             if (transform.localPosition.x <= -76.2)
             {
                 leftlighton = false;
                 rightlighton = true;
-                if (movement.ChicaLocation == 6)
+                if (movement.ChicaLocation == "RIGHTDOOR")
                 {
                     gameObject.GetComponent<Image>().sprite = RightLightChica;
+                    RightLightBar.GetComponent<Image>().sprite = RightLightBarLight;
+                    LightSound.Play();
+                    timeandpower.PowerUsage += 1;
+                    done = false;
+                }
+                else if (movement.ChicaLocation != "INSIDE")
+                {
+                    gameObject.GetComponent<Image>().sprite = RightLight;
+                    RightLightBar.GetComponent<Image>().sprite = RightLightBarLight;
+                    LightSound.Play();
+                    timeandpower.PowerUsage += 1;
+                    done = false;
                 }
                 else
                 {
-                    gameObject.GetComponent<Image>().sprite = RightLight;
-
+                    error.Play();
                 }
-                RightLightBar.GetComponent<Image>().sprite = RightLightBarLight;
-                LightSound.Play();
-                timeandpower.PowerUsage += 1;
-                done = false;
+
             }
 
         }
@@ -126,43 +143,59 @@ public class Office : MonoBehaviour {
         {
             if (transform.localPosition.x >= 69 && leftdoorcooldown < 0)
             {
-                leftdoorcooldown = 0.3f;
-                Debug.Log("Epic");
-                DoorSound.Play();
-                if (leftdoorclosed == true)
+                if (movement.BonnieLocation != "INSIDE")
                 {
-                    LeftDoor.GetComponent<Animator>().Play("LeftdoorOpen");
-                    timeandpower.PowerUsage -= 1;
-                    leftdoorclosed = false;
+                    leftdoorcooldown = 0.3f;
+                    Debug.Log("Epic");
+                    DoorSound.Play();
+                    if (leftdoorclosed == true)
+                    {
+                        LeftDoor.GetComponent<Animator>().Play("LeftdoorOpen");
+                        timeandpower.PowerUsage -= 1;
+                        leftdoorclosed = false;
+                    }
+                    else
+                    {
+                        LeftDoor.GetComponent<Animator>().Play("Close");
+                        timeandpower.PowerUsage += 1;
+                        leftdoorclosed = true;
+                        LeftDoor.SetActive(true);
+                    }   
                 }
                 else
                 {
-                    LeftDoor.GetComponent<Animator>().Play("Close");
-                    timeandpower.PowerUsage += 1;
-                    leftdoorclosed = true;
-                    LeftDoor.SetActive(true);
+                    error.Play();
                 }
+
             }
             if (transform.localPosition.x <= -76.2 && rightdoorcooldown < 0)
             {
-                rightdoorcooldown = 0.3f;
-
-                Debug.Log("Epic");
-                DoorSound.Play();
-
-                if (rightdoorclosed == true)
+                if (movement.ChicaLocation != "INSIDE")
                 {
-                    RightDoor.GetComponent<Animator>().Play("Rightdooropen");
-                    timeandpower.PowerUsage -= 1;
-                    rightdoorclosed = false;
+                    rightdoorcooldown = 0.3f;
+
+                    Debug.Log("Epic");
+                    DoorSound.Play();
+
+                    if (rightdoorclosed == true)
+                    {
+                        RightDoor.GetComponent<Animator>().Play("Rightdooropen");
+                        timeandpower.PowerUsage -= 1;
+                        rightdoorclosed = false;
+                    }
+                    else
+                    {
+                        RightDoor.GetComponent<Animator>().Play("Rightdoorclose");
+                        timeandpower.PowerUsage += 1;
+                        rightdoorclosed = true;
+                        RightDoor.SetActive(true);
+                    }
                 }
                 else
                 {
-                    RightDoor.GetComponent<Animator>().Play("Rightdoorclose");
-                    timeandpower.PowerUsage += 1;
-                    rightdoorclosed = true;
-                    RightDoor.SetActive(true);
+                    error.Play();
                 }
+
             }
 
         }
