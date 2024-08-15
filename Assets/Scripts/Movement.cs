@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Movement : MonoBehaviour {
+public class Movement : MonoBehaviour
+{
     int Night;
     public int BonnieDifficulty;
     public int ChicaDifficulty;
@@ -39,11 +39,11 @@ public class Movement : MonoBehaviour {
     public GameObject DividedStatic;
     float cooldown;
     bool once = false;
-   
+
     void Update()
     {
         // Foxy code
-        { 
+        {
             if (CameraIsUp == !true)
             {
                 FoxyMovementCountdownBonus = UnityEngine.Random.Range(0.83f, 16.67f);
@@ -110,7 +110,7 @@ public class Movement : MonoBehaviour {
                 StaticDeath.Play();
 
                 DestroyImmediate(bonniejumpscare, true);
-                
+
                 CameraStatic.SetActive(true);
                 CameraStatic.GetComponent<Animator>().Play("NewAnim");
                 CameraStatic.transform.SetAsLastSibling();
@@ -151,7 +151,7 @@ public class Movement : MonoBehaviour {
             {
 
             }
-            if (chicainside != true && bonnieinside != true) 
+            if (chicainside != true && bonnieinside != true)
             {
                 CameraStatic.SetActive(false);
             }
@@ -218,7 +218,8 @@ public class Movement : MonoBehaviour {
         }
 
     }
-    void Start () {
+    void Start()
+    {
         StartCoroutine("BonnieMovement");
         StartCoroutine("ChicaMovement");
         Night = PlayerPrefs.GetInt("Night", Night);
@@ -496,7 +497,7 @@ public class Movement : MonoBehaviour {
                 }
                 if (ChicaLocation == CameraScript.buttonpublic || prevloc2 == CameraScript.buttonpublic)
                 {
-                   CameraScript.StartCoroutine("Blackout");
+                    CameraScript.StartCoroutine("Blackout");
                 }
                 prevloc2 = ChicaLocation;
             }

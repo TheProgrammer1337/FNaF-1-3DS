@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Office : MonoBehaviour {
+public class Office : MonoBehaviour
+{
     public GameObject LeftLightBar;
     public GameObject RightLightBar;
 
@@ -14,14 +12,18 @@ public class Office : MonoBehaviour {
 
     public GameObject LowerCanvas;
 
+    public Sprite LeftLightBarLightDoor;
+    public Sprite LeftLightBarDoor;
     public Sprite LeftLightBarLight;
     public Sprite LeftLightBarNone;
 
+    public Sprite RightLightBarDoor;
+    public Sprite RightLightBarLightDoor;
     public Sprite RightLightBarLight;
     public Sprite RightLightBarNone;
 
     public Sprite NoLight;
-	public Sprite LeftLight;
+    public Sprite LeftLight;
     public Sprite RightLight;
 
     public Sprite LeftLightBonnie;
@@ -44,31 +46,24 @@ public class Office : MonoBehaviour {
 
     bool done;
     public bool cancamera;
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+
+    void Update()
+    {
         leftdoorcooldown -= Time.deltaTime;
         rightdoorcooldown -= Time.deltaTime;
-        if (Input.GetKey(KeyCode.LeftArrow))
-		{
-			if (transform.localPosition.x < 69)
-			{
-				transform.localPosition += new Vector3(4, 0);
-			}
-		}
-        if (Input.GetKey(KeyCode.RightArrow))
+
+        if (Input.GetKey(KeyCode.LeftArrow) && transform.localPosition.x < 69)
         {
-            if (transform.localPosition.x > -75)
-            {
-                transform.localPosition -= new Vector3(4, 0);
-            }
+            transform.localPosition += new Vector3(4, 0);
         }
-		if (Input.GetKeyDown(KeyCode.B))
-		{
+        if (Input.GetKey(KeyCode.RightArrow) && transform.localPosition.x > -75)
+        {
+            transform.localPosition -= new Vector3(4, 0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
             if (transform.localPosition.x >= 69)
             {
                 leftlighton = true;
@@ -83,7 +78,7 @@ public class Office : MonoBehaviour {
                 else if (movement.BonnieLocation != "INSIDE")
                 {
                     gameObject.GetComponent<Image>().sprite = LeftLight;
-                    LeftLightBar.GetComponent<Image>().sprite = LeftLightBarLight;
+                    LeftLightBar.GetComponent<Image>().sprite = leftdoorclosed ? LeftLightBarLightDoor : LeftLightBarLight;
                     LightSound.Play();
                     timeandpower.PowerUsage += 1;
                 }
@@ -91,10 +86,9 @@ public class Office : MonoBehaviour {
                 {
                     error.Play();
                 }
-
                 done = false;
             }
-            if (transform.localPosition.x <= -76.2)
+            else if (transform.localPosition.x <= -76.2)
             {
                 leftlighton = false;
                 rightlighton = true;
@@ -104,39 +98,32 @@ public class Office : MonoBehaviour {
                     RightLightBar.GetComponent<Image>().sprite = RightLightBarLight;
                     LightSound.Play();
                     timeandpower.PowerUsage += 1;
-                    done = false;
                 }
                 else if (movement.ChicaLocation != "INSIDE")
                 {
                     gameObject.GetComponent<Image>().sprite = RightLight;
-                    RightLightBar.GetComponent<Image>().sprite = RightLightBarLight;
+                    RightLightBar.GetComponent<Image>().sprite = rightdoorclosed ? RightLightBarLightDoor : RightLightBarLight;
                     LightSound.Play();
                     timeandpower.PowerUsage += 1;
-                    done = false;
                 }
                 else
                 {
                     error.Play();
                 }
-
+                done = false;
             }
-
         }
-        if (Input.GetKeyUp(KeyCode.B))
-        {
-            if (done == false)
-            {
-                gameObject.GetComponent<Image>().sprite = NoLight;
-                LeftLightBar.GetComponent<Image>().sprite = LeftLightBarNone;
-                RightLightBar.GetComponent<Image>().sprite = RightLightBarNone;
-                LightSound.Stop();
-                timeandpower.PowerUsage -= 1;
-                leftlighton = false;
-                rightlighton = false;
-                done = true;
-                
-            }
 
+        if (Input.GetKeyUp(KeyCode.B) && !done)
+        {
+            gameObject.GetComponent<Image>().sprite = NoLight;
+            LeftLightBar.GetComponent<Image>().sprite = leftdoorclosed ? LeftLightBarDoor : LeftLightBarNone;
+            RightLightBar.GetComponent<Image>().sprite = rightdoorclosed ? RightLightBarDoor : RightLightBarNone;
+            LightSound.Stop();
+            timeandpower.PowerUsage -= 1;
+            leftlighton = false;
+            rightlighton = false;
+            done = true;
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -146,59 +133,82 @@ public class Office : MonoBehaviour {
                 if (movement.BonnieLocation != "INSIDE")
                 {
                     leftdoorcooldown = 0.3f;
-                    Debug.Log("Epic");
                     DoorSound.Play();
-                    if (leftdoorclosed == true)
+                    if (leftdoorclosed)
                     {
                         LeftDoor.GetComponent<Animator>().Play("LeftdoorOpen");
                         timeandpower.PowerUsage -= 1;
-                        leftdoorclosed = false;
+                        if (leftlighton == true)
+                        {
+                            LeftLightBar.GetComponent<Image>().sprite = LeftLightBarLight;
+                        }
+                        else
+                        {
+                            LeftLightBar.GetComponent<Image>().sprite = LeftLightBarNone;
+                        }
                     }
                     else
                     {
                         LeftDoor.GetComponent<Animator>().Play("Close");
                         timeandpower.PowerUsage += 1;
-                        leftdoorclosed = true;
                         LeftDoor.SetActive(true);
-                    }   
+                        if (leftlighton == true)
+                        {
+                            LeftLightBar.GetComponent<Image>().sprite = LeftLightBarLightDoor;
+                        }
+                        else
+                        {
+                            LeftLightBar.GetComponent<Image>().sprite = LeftLightBarDoor;
+                        }
+                    }
+                    leftdoorclosed = !leftdoorclosed;
                 }
                 else
                 {
                     error.Play();
                 }
-
             }
-            if (transform.localPosition.x <= -76.2 && rightdoorcooldown < 0)
+            else if (transform.localPosition.x <= -76.2 && rightdoorcooldown < 0)
             {
                 if (movement.ChicaLocation != "INSIDE")
                 {
                     rightdoorcooldown = 0.3f;
-
-                    Debug.Log("Epic");
                     DoorSound.Play();
-
-                    if (rightdoorclosed == true)
+                    if (rightdoorclosed)
                     {
                         RightDoor.GetComponent<Animator>().Play("Rightdooropen");
                         timeandpower.PowerUsage -= 1;
-                        rightdoorclosed = false;
+                        if (rightlighton == true)
+                        {
+                            RightLightBar.GetComponent<Image>().sprite = RightLightBarLight;
+                        }
+                        else
+                        {
+                            RightLightBar.GetComponent<Image>().sprite = RightLightBarNone;
+                        }
                     }
                     else
                     {
                         RightDoor.GetComponent<Animator>().Play("Rightdoorclose");
                         timeandpower.PowerUsage += 1;
-                        rightdoorclosed = true;
                         RightDoor.SetActive(true);
+                        if (rightlighton == true)
+                        {
+                            RightLightBar.GetComponent<Image>().sprite = RightLightBarLightDoor;
+                        }
+                        else
+                        {
+                            RightLightBar.GetComponent<Image>().sprite = RightLightBarDoor;
+                        }
                     }
+                    rightdoorclosed = !rightdoorclosed;
                 }
                 else
                 {
                     error.Play();
                 }
-
             }
-
         }
     }
-
 }
+

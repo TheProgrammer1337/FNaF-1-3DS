@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DividedStatic : MonoBehaviour {
+public class DividedStatic : MonoBehaviour
+{
 
     void OnEnable()
     {

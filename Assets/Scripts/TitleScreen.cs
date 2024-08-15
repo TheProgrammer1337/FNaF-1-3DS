@@ -1,23 +1,25 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TitleScreen : MonoBehaviour {
-	public Sprite Frame1, Frame2, Frame3, Frame4;
+public class TitleScreen : MonoBehaviour
+{
+    public Sprite Frame1, Frame2, Frame3, Frame4;
     public GameObject Pointer;
     public GameObject NewsPaper;
     public GameObject LowerCanvas;
     private bool newgame;
     // Use this for initialization
-    void Start () {
-		StartCoroutine("Animation");
-	}
+    void Start()
+    {
+        StartCoroutine("Animation");
+    }
     public int position = 0;
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown(KeyCode.DownArrow))
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (position > -3)
             {
@@ -63,12 +65,12 @@ public class TitleScreen : MonoBehaviour {
         newgame = true;
     }
     IEnumerator Animation()
-	{
-		while (true)
-		{
+    {
+        while (true)
+        {
 
             yield return new WaitForSeconds(0.01f + Random.Range(0.5f, 3f));
-            int rand = Random.Range(0, 10   );
+            int rand = Random.Range(0, 10);
             if (rand == 0)
             {
                 gameObject.GetComponent<Image>().sprite = Frame3;

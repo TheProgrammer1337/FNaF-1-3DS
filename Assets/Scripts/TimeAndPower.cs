@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class TimeAndPower : MonoBehaviour {
-	public float Time = 360;
+public class TimeAndPower : MonoBehaviour
+{
+    public float Time = 360;
     public int PowerLeft = 101;
     public float PowerDrain = 6;
     public int PowerUsage = 1;
@@ -22,12 +20,14 @@ public class TimeAndPower : MonoBehaviour {
     private string[] timeTexts = { "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM" };
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         switch (PowerUsage)
         {
             case 1:
@@ -88,4 +88,4 @@ public class TimeAndPower : MonoBehaviour {
         }
     }
 }
-    
+
